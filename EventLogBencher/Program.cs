@@ -10,10 +10,7 @@ namespace EventLogBencher
 {
     class Program
     {
-        public static void Main(string[] args)
-        {
-            int waitMSec = 1 * 1000;
-
+        static void CheckChannelExistence() {
             // Create the source, if it does not already exist.
             if (!EventLog.SourceExists("FluentBench"))
             {
@@ -27,13 +24,9 @@ namespace EventLogBencher
                 // The source is created.  Exit the application to allow it to be registered.
                 return;
             }
-            if (args.Length == 1) {
-                waitMSec = Convert.ToInt32(args[0]);
-            }
+        }
 
-            // Create an EventLog instance and assign its source.
-            EventLog benchLog = new EventLog { Source = "FluentBench" };
-
+        static void DoBenchmark(EventLog benchLog, int waitMSec) {
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
@@ -45,7 +38,7 @@ namespace EventLogBencher
                     Console.Write(String.Format("{0}", i * 10));
                     Task.Run(() => MonitorRubyProcesses());
                 }
-                
+
                 // Write an informational entry to the event log.    
                 benchLog.WriteEntry(String.Format("Writing to event log. {0} times.", i));
                 benchLog.WriteEntry("ⒻⓁuenⓉⒹ™");
@@ -65,6 +58,22 @@ namespace EventLogBencher
             Console.WriteLine(String.Format("{0} events per seconds emitted.", 10000.0 / (float)(sw.ElapsedMilliseconds / 1000.0)));
 
             Console.WriteLine("Message written to event log.");
+        }
+
+        public static void Main(string[] args)
+        {
+            int waitMSec = 1 * 1000;
+
+            CheckChannelExistence();
+
+            if (args.Length == 1) {
+                waitMSec = Convert.ToInt32(args[0]);
+            }
+
+            // Create an EventLog instance and assign its source.
+            EventLog benchLog = new EventLog { Source = "FluentBench" };
+
+            DoBenchmark(benchLog, waitMSec);
         }
 
         static void MonitorRubyProcesses()
