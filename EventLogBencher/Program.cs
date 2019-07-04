@@ -6,6 +6,23 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+class Options
+{
+    [CommandLine.Option('w', "wait-msec", Required = true, HelpText = "ループで待つミリ秒")]
+    public string WaitMSec
+    {
+        get;
+        set;
+    }
+
+    [CommandLine.Option('t', "total-events", Required = true, HelpText = "出力するイベントの総数")]
+    public string TotalEvents
+    {
+        get;
+        set;
+    }
+}
+
 namespace EventLogBencher
 {
     class Program
@@ -26,12 +43,12 @@ namespace EventLogBencher
             }
         }
 
-        static void DoBenchmark(EventLog benchLog, int waitMSec) {
+        static void DoBenchmark(EventLog benchLog, int waitMSec, long totalEvents) {
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
             Console.WriteLine("events\tMB");
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < totalEvents / 10; i++)
             {
                 if (i % 10 == 0)
                 {
@@ -53,9 +70,9 @@ namespace EventLogBencher
                 Thread.Sleep(waitMSec);
             }
             sw.Stop();
-            Console.Write("10000");
+            Console.Write(String.Format("{0}", totalEvents));
             MonitorRubyProcesses();
-            Console.WriteLine(String.Format("{0} events per seconds emitted.", 10000.0 / (float)(sw.ElapsedMilliseconds / 1000.0)));
+            Console.WriteLine(String.Format("{0} events per seconds emitted.", totalEvents / (float)(sw.ElapsedMilliseconds / 1000.0)));
 
             Console.WriteLine("Message written to event log.");
         }
@@ -63,17 +80,35 @@ namespace EventLogBencher
         public static void Main(string[] args)
         {
             int waitMSec = 1 * 1000;
+            long totalEvents = 10000;
 
-            CheckChannelExistence();
+            CommandLine.ParserResult<Options> result = CommandLine.Parser.Default.ParseArguments<Options>(args);
 
-            if (args.Length == 1) {
-                waitMSec = Convert.ToInt32(args[0]);
+            if (result.Tag == CommandLine.ParserResultType.Parsed)
+            {
+                var parsed = (CommandLine.Parsed<Options>)result;
+
+                waitMSec = Convert.ToInt32(parsed.Value.WaitMSec);
+                totalEvents = Convert.ToInt64(parsed.Value.TotalEvents);
+
+                Console.WriteLine("waitMSec: {0}", waitMSec);
+                Console.WriteLine("totalEvents: {0}", totalEvents);
+
+                DoBenchMark(waitMSec, totalEvents);
             }
+            else
+            {
+                Console.WriteLine("\nPlease check correct arguments!");
+            }
+        }
+
+        static void DoBenchMark(int waitMSec, long totalEvents) {
+            CheckChannelExistence();
 
             // Create an EventLog instance and assign its source.
             EventLog benchLog = new EventLog { Source = "FluentBench" };
 
-            DoBenchmark(benchLog, waitMSec);
+            DoBenchmark(benchLog, waitMSec, totalEvents);
         }
 
         static void MonitorRubyProcesses()
