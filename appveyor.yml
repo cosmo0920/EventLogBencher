@@ -1,0 +1,15 @@
+version: 1.0.{build}
+
+image: Visual Studio 2017
+
+platform: Any CPU
+configuration: Release
+
+before_build:
+  - nuget restore
+
+build:
+  parallel: true
+  project: EventLogBencher.sln  
+
+test: off
