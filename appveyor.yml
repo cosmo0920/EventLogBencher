@@ -10,6 +10,25 @@ before_build:
 
 build:
   parallel: true
-  project: EventLogBencher.sln  
+  project: EventLogBencher.sln
+
+after_build:
+  - 7z a EventLogBencher.zip .\EventLogBencher\bin\Release\*
+  - set ARTIFACT=EventLogBencher.zip
 
 test: off
+
+artifacts:
+  - path: EventLogBencher.zip
+    name: binary
+
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: 7XdoaFISgIXPlmVTNkMMS5cOhQzCQ06N1ksjNsres/dAyMYbT8CTxnV9KgHabwww
+  artifact: binary          # upload zip archive to release assets
+  draft: false
+  prerelease: false
+  force_update: true
+  on:
+    appveyor_repo_tag: true        # deploy on tag push only
