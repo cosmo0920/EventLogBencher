@@ -48,14 +48,13 @@ namespace EventLogBencher
             sw.Start();
 
             Console.WriteLine("events\tMB\tTotal CPU Usage");
-            PerformanceCounter cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-            cpuCounter.NextValue();
+            TotalCPUCounter counter = new TotalCPUCounter();
             for (int i = 0; i < totalEvents / 10; i++)
             {
                 if (i % 10 == 0)
                 {
                     Console.Write(String.Format("{0, 8}", i * 10));
-                    Task.Run(() => MonitorRubyProcesses(cpuCounter));
+                    Task.Run(() => MonitorRubyProcesses(counter));
                 }
 
                 // Write an informational entry to the event log.    
@@ -73,7 +72,7 @@ namespace EventLogBencher
             }
             sw.Stop();
             Console.Write(String.Format("{0, 8}", totalEvents));
-            MonitorRubyProcesses(cpuCounter);
+            MonitorRubyProcesses(counter);
             Console.WriteLine(String.Format("{0} events per seconds emitted.", totalEvents / (float)(sw.ElapsedMilliseconds / 1000.0)));
 
             Console.WriteLine("Message written to event log.");
@@ -113,7 +112,7 @@ namespace EventLogBencher
             DoBenchmark(benchLog, waitMSec, totalEvents);
         }
 
-        static void MonitorRubyProcesses(PerformanceCounter cpuCounter)
+        static void MonitorRubyProcesses(TotalCPUCounter cpuCounter)
         {
             long memory = 0;
             Process[] rubies;
@@ -124,7 +123,7 @@ namespace EventLogBencher
                 if ((i + 1)% rubies.Count() == 0)
                     Console.Write("\t{0, 8}", memory / (float)(1024.0 * 1024.0));
             }
-            Console.WriteLine("\t{0, 8}", cpuCounter.NextValue());
+            cpuCounter.GetCPUUsage();
         }
     }
 }
