@@ -6,23 +6,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-class Options
-{
-    [CommandLine.Option('w', "wait-msec", Required = true, HelpText = "ループで待つミリ秒")]
-    public string WaitMSec
-    {
-        get;
-        set;
-    }
-
-    [CommandLine.Option('t', "total-events", Required = true, HelpText = "出力するイベントの総数")]
-    public string TotalEvents
-    {
-        get;
-        set;
-    }
-}
-
 namespace EventLogBencher
 {
     class Program
