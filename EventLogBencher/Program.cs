@@ -54,7 +54,7 @@ namespace EventLogBencher
                 if (i % 10 == 0)
                 {
                     Console.Write(String.Format("{0, 8}", i * 10));
-                    Task.Run(() => MonitorRubyProcesses(counter));
+                    Task.Run(() => MonitorProcesses(counter));
                 }
 
                 // Write an informational entry to the event log.    
@@ -72,7 +72,7 @@ namespace EventLogBencher
             }
             sw.Stop();
             Console.Write(String.Format("{0, 8}", totalEvents));
-            MonitorRubyProcesses(counter);
+            MonitorProcesses(counter);
             Console.WriteLine(String.Format("{0} events per seconds emitted.", totalEvents / (float)(sw.ElapsedMilliseconds / 1000.0)));
 
             Console.WriteLine("Message written to event log.");
@@ -112,7 +112,7 @@ namespace EventLogBencher
             DoBenchmark(benchLog, waitMSec, totalEvents);
         }
 
-        static void MonitorRubyProcesses(TotalCPUCounter cpuCounter)
+        static void MonitorProcesses(TotalCPUCounter cpuCounter)
         {
             long memory = 0;
             Process[] rubies;
