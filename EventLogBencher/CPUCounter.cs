@@ -12,7 +12,7 @@ namespace EventLogBencher
         private PerformanceCounter counter;
         public PerformanceCounter Counter {
             get { return counter; }
-            set { counter = value; }
+            private set { counter = value; }
         }
 
         public TotalCPUCounter()
