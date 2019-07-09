@@ -47,13 +47,15 @@ namespace EventLogBencher
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            Console.WriteLine("events\tMB");
+            Console.WriteLine("events\tMB\tTotal CPU Usage");
+            PerformanceCounter cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            cpuCounter.NextValue();
             for (int i = 0; i < totalEvents / 10; i++)
             {
                 if (i % 10 == 0)
                 {
-                    Console.Write(String.Format("{0}", i * 10));
-                    Task.Run(() => MonitorRubyProcesses());
+                    Console.Write(String.Format("{0, 8}", i * 10));
+                    Task.Run(() => MonitorRubyProcesses(cpuCounter));
                 }
 
                 // Write an informational entry to the event log.    
@@ -70,8 +72,8 @@ namespace EventLogBencher
                 Thread.Sleep(waitMSec);
             }
             sw.Stop();
-            Console.Write(String.Format("{0}", totalEvents));
-            MonitorRubyProcesses();
+            Console.Write(String.Format("{0, 8}", totalEvents));
+            MonitorRubyProcesses(cpuCounter);
             Console.WriteLine(String.Format("{0} events per seconds emitted.", totalEvents / (float)(sw.ElapsedMilliseconds / 1000.0)));
 
             Console.WriteLine("Message written to event log.");
@@ -111,7 +113,7 @@ namespace EventLogBencher
             DoBenchmark(benchLog, waitMSec, totalEvents);
         }
 
-        static void MonitorRubyProcesses()
+        static void MonitorRubyProcesses(PerformanceCounter cpuCounter)
         {
             long memory = 0;
             Process[] rubies;
@@ -120,8 +122,9 @@ namespace EventLogBencher
             {
                 memory += rubies[i].PrivateMemorySize64;
                 if ((i + 1)% rubies.Count() == 0)
-                    Console.WriteLine("\t{0}", memory / (float)(1024.0 * 1024.0));
+                    Console.Write("\t{0, 8}", memory / (float)(1024.0 * 1024.0));
             }
+            Console.WriteLine("\t{0, 8}", cpuCounter.NextValue());
         }
     }
 }
