@@ -30,7 +30,7 @@ namespace EventLogBencher
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            Console.WriteLine("events\tMB\tTotal CPU Usage");
+            Console.WriteLine("events\tMB\tCPU Usage");
             TotalCPUCounter counter = new TotalCPUCounter();
             for (int i = 0; i < totalEvents / 10; i++)
             {
