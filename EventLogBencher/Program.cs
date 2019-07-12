@@ -30,7 +30,7 @@ namespace EventLogBencher
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            Console.WriteLine("events\tMB\tCPU Usage");
+            Console.WriteLine("events\tMB\tToal CPU Usage");
             TotalCPUCounter counter = new TotalCPUCounter();
             for (int i = 0; i < totalEvents / 10; i++)
             {
@@ -56,7 +56,7 @@ namespace EventLogBencher
             sw.Stop();
             Console.Write(String.Format("{0, 8}", totalEvents));
             MonitorProcesses(counter);
-            Console.WriteLine(String.Format("{0} events per seconds emitted.", totalEvents / (float)(sw.ElapsedMilliseconds / 1000.0)));
+            Console.WriteLine(String.Format("Flow rate: {0} events per seconds.", totalEvents / (float)(sw.ElapsedMilliseconds / 1000.0)));
 
             Console.WriteLine("Message written to event log.");
         }
