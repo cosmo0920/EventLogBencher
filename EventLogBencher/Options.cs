@@ -21,5 +21,12 @@ namespace EventLogBencher
             get;
             set;
         }
+
+        [CommandLine.Option('l', "lorem-ipsum-length", Required = false, Default=-1, HelpText = "Lorem Ipsum 文字列長")]
+        public long LoremIpsumLength
+        {
+            get;
+            set;
+        }
     }
 }
