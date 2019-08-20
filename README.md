@@ -8,7 +8,7 @@ A tiny EventLog benchmark tool.
 ### Usage
 
 ```powershell
-PS> .\bin\<build type>\EventLogbencher.exe -w [wait milliseconds] -t [total emitting events]
+PS> .\bin\<build type>\EventLogbencher.exe -w [wait milliseconds] -t [total emitting events] [-l [emitting lorem ipsum text length (1 to 65535)]]
 ```
 
 ### LICENSE
