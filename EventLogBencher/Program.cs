@@ -30,7 +30,7 @@ namespace EventLogBencher
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            Console.WriteLine("events\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage");
+            Console.WriteLine("events\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage");
             TotalCPUCounter counter = new TotalCPUCounter();
             for (int i = 0; i < totalEvents / 10; i++)
             {
@@ -69,7 +69,7 @@ namespace EventLogBencher
             //  loremIpsumLength should be less equal than 65535.
             loremIpsumLength = loremIpsumLength > 65535 ? 65535 : loremIpsumLength;
 
-            Console.WriteLine("events\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage");
+            Console.WriteLine("events\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage");
             TotalCPUCounter counter = new TotalCPUCounter();
             var text = LoremIpsum.ASCIIText();
             Encoding e = System.Text.Encoding.GetEncoding("UTF-8");
@@ -147,11 +147,14 @@ namespace EventLogBencher
 
         static void MonitorProcesses(TotalCPUCounter cpuCounter)
         {
-            long private_memory = 0, pagefile_memory = 0;
+            long workingset_memory = 0, private_memory = 0, pagefile_memory = 0;
             Process[] rubies;
             rubies = Process.GetProcessesByName("ruby");
             for (int i = 0; i < rubies.Count(); i++)
             {
+                workingset_memory += rubies[i].WorkingSet64;
+                if ((i + 1) % rubies.Count() == 0)
+                    Console.Write("\t{0, 8}", workingset_memory / (float)(1024.0 * 1024.0));
                 private_memory += rubies[i].PrivateMemorySize64;
                 if ((i + 1)% rubies.Count() == 0)
                     Console.Write("\t{0, 8}", private_memory / (float)(1024.0 * 1024.0));
