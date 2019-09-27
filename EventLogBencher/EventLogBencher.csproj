@@ -48,9 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CPUCounter.cs" />
-    <Compile Include="LoremIpsum.cs" />
-    <Compile Include="MonitorProcesses.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,5 +57,6 @@
     <None Include="app.manifest" />
     <None Include="packages.config" />
   </ItemGroup>
+  <Import Project="..\SharedUtility\SharedUtility.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
