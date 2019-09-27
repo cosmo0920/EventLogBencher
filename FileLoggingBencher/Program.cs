@@ -65,6 +65,7 @@ namespace FileLoggingBencher
 
             long batchNum = rate / BINNUM;
             long residualNUM = rate % BINNUM;
+            Generator generator = new Generator();
 
             for (int i = 0; i < totalEvents ; i++)
             {
@@ -82,11 +83,11 @@ namespace FileLoggingBencher
                     for (int j = 0; j < BINNUM; j++)
                     {
                         for (int k = 0; k < batchNum; k++)
-                            file.WriteLine("Fourth line: {0}", k);
+                            file.WriteLine(generator.Run());
                         Thread.Sleep(10);
                     }
                     for (int j = 0; j < residualNUM; j++)
-                        file.WriteLine("Ya!!!!");
+                        file.WriteLine(generator.Run());
                 }
                 while (GetUnixTime(DateTime.Now) <= currentTime)
                 {
