@@ -59,7 +59,7 @@ namespace FileLoggingBencher
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            Console.WriteLine("events\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage");
+            Console.WriteLine("steps\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage");
             TotalCPUCounter counter = new TotalCPUCounter();
             MonitorProcesses monitor = new MonitorProcesses(counter);
 
