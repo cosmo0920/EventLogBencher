@@ -18,7 +18,7 @@ namespace FileLoggingBencher
         static void Main(string[] args)
         {
             int rate = 300;
-            long totalEvents = 10000;
+            long loggingSteps = 50;
             long loremIpsumLength = -1;
             string outputFile = "";
 
@@ -29,16 +29,16 @@ namespace FileLoggingBencher
                 var parsed = (CommandLine.Parsed<Options>)result;
 
                 rate = Convert.ToInt32(parsed.Value.Rate);
-                totalEvents = Convert.ToInt64(parsed.Value.TotalSeconds);
+                loggingSteps = Convert.ToInt64(parsed.Value.TotalSeconds);
                 loremIpsumLength = parsed.Value.LoremIpsumLength;
                 outputFile = parsed.Value.OutputFile;
 
                 Console.WriteLine("rate: {0}", rate);
-                Console.WriteLine("totalSeconds: {0}", totalEvents);
+                Console.WriteLine("loggingSteps: {0}", loggingSteps);
                 Console.WriteLine("loremIpsumLength: {0}", loremIpsumLength);
                 Console.WriteLine("outputFile: {0}", outputFile);
 
-                DoBenchMark(rate, totalEvents, loremIpsumLength, outputFile);
+                DoBenchMark(rate, loggingSteps, loremIpsumLength, outputFile);
             }
             else
             {
@@ -54,7 +54,7 @@ namespace FileLoggingBencher
             return (long)elapsedTime.TotalSeconds;
         }
 
-        private static void DoBenchMark(int rate, long totalEvents, long loremIpsumLength, string outputFile)
+        private static void DoBenchMark(int rate, long loggingSteps, long loremIpsumLength, string outputFile)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -67,7 +67,7 @@ namespace FileLoggingBencher
             long residualNUM = rate % BINNUM;
             Generator generator = new Generator();
 
-            for (int i = 0; i < totalEvents ; i++)
+            for (int i = 0; i < loggingSteps ; i++)
             {
                 DateTime targetTime = DateTime.Now;
                 long currentTime = GetUnixTime(targetTime);
@@ -95,7 +95,7 @@ namespace FileLoggingBencher
                 }
             }
             sw.Stop();
-            Console.Write(String.Format("{0, 8}", totalEvents));
+            Console.Write(String.Format("{0, 8}", loggingSteps));
             monitor.Run();
             Console.WriteLine(String.Format("elapsed time(second): {0}", (float)(sw.ElapsedMilliseconds / 1000.0)));
 
