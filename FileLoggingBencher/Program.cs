@@ -72,11 +72,8 @@ namespace FileLoggingBencher
                 DateTime targetTime = DateTime.Now;
                 long currentTime = GetUnixTime(targetTime);
 
-                if (i % 10 == 0)
-                {
-                    Console.Write(String.Format("{0, 8}", i * 10));
-                    Task.Run(() => monitor.Run());
-                }
+                Console.Write(String.Format("{0, 8}", i));
+                Task.Run(() => monitor.Run());
 
                 using (StreamWriter file = new StreamWriter(outputFile, true))
                 {
