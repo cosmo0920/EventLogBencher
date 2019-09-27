@@ -2,3 +2,5 @@
 /EventLogBencher/obj/
 /.vs/
 /packages/
+/FileLoggingBencher/bin/
+/FileLoggingBencher/obj/
