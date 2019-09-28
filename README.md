@@ -5,6 +5,14 @@ EventLogBencher
 
 A tiny EventLog benchmark tool.
 
+### Prerequisites
+
+* .NET Framework 4.6.1 Runtime
+
+### Environment
+
+* Confirmed to work with Windows 10 1809 or later
+
 ### Usage
 
 ```powershell
