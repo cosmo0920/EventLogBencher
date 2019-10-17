@@ -7,6 +7,7 @@ configuration: Release
 
 before_build:
   - nuget restore
+  - dotnet restore
 
 build:
   parallel: true
@@ -15,7 +16,10 @@ build:
 after_build:
   - 7z a EventLogBencher.zip .\EventLogBencher\bin\Release\*
   - 7z a FileLoggingBencher.zip .\FileLoggingBencher\bin\Release\*
-  - 7z a BenchmarkPerformanceMonitor-netcoreapp2.2-windows.zip .\BenchmarkPerformanceMonitor\bin\Release\netcoreapp2.2\*
+  - dotnet publish .\BenchmarkPerformanceMonitor\ -c release -r win-x64
+  - dotnet publish .\BenchmarkPerformanceMonitor\ -c release -r linux-x64
+  - 7z a BenchmarkPerformanceMonitor-netcoreapp2.2-win-x64.zip ".\BenchmarkPerformanceMonitor\bin\ANY CPU\Release\netcoreapp2.2\win-x64\publish\*"
+  - 7z a BenchmarkPerformanceMonitor-netcoreapp2.2-linux-x64.zip ".\BenchmarkPerformanceMonitor\bin\ANY CPU\Release\netcoreapp2.2\linux-x64\publish\*"
 
 test: off
 
@@ -24,8 +28,10 @@ artifacts:
     name: EventLogBencher
   - path: FileLoggingBencher.zip
     name: FileLoggingBencher
-  - path: BenchmarkPerformanceMonitor-netcoreapp2.2-windows.zip
-    name: BenchmarkPerformanceMonitor-netcoreapp2.2-windows
+  - path: BenchmarkPerformanceMonitor-netcoreapp2.2-win-x64.zip
+    name: BenchmarkPerformanceMonitor-netcoreapp2.2-win-x64
+  - path: BenchmarkPerformanceMonitor-netcoreapp2.2-linux-x64.zip
+    name: BenchmarkPerformanceMonitor-netcoreapp2.2-linux-x64
 
 deploy:
   provider: GitHub
