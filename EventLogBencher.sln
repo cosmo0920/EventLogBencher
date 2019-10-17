@@ -9,6 +9,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedUtility", "SharedUtil
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileLoggingBencher", "FileLoggingBencher\FileLoggingBencher.csproj", "{93F270D0-7E08-4E24-8E66-6ADEEF2FA661}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkPerformanceMonitor", "BenchmarkPerformanceMonitor\BenchmarkPerformanceMonitor.csproj", "{E0D6B99F-4D75-4585-B112-D80C51B463A9}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SharedUtility\SharedUtility.projitems*{37462979-2a6d-4c54-bd99-bcb325e7eb5f}*SharedItemsImports = 13
@@ -28,6 +30,10 @@ Global
 		{93F270D0-7E08-4E24-8E66-6ADEEF2FA661}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93F270D0-7E08-4E24-8E66-6ADEEF2FA661}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93F270D0-7E08-4E24-8E66-6ADEEF2FA661}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0D6B99F-4D75-4585-B112-D80C51B463A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0D6B99F-4D75-4585-B112-D80C51B463A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0D6B99F-4D75-4585-B112-D80C51B463A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0D6B99F-4D75-4585-B112-D80C51B463A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

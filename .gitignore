@@ -4,3 +4,5 @@
 /packages/
 /FileLoggingBencher/bin/
 /FileLoggingBencher/obj/
+/BenchmarkPerformanceMonitor/bin/
+/BenchmarkPerformanceMonitor/obj/
