@@ -7,13 +7,32 @@ A tiny EventLog benchmark tool.
 
 ### Prerequisites
 
+#### Benchmark Tool
+
 * .NET Framework 4.6.1 Runtime
+
+#### Windows Monitoring Tool
+
+* .Net Core 2.2
+
+#### Linux Monitoring Tool
+
+* Python3
+  * psutil
 
 ### Environment
 
+#### Benchmark Tool & Windows Monitoring Tool
+
 * Confirmed to work with Windows 10 1809 or later
 
+#### Linux Monitoring Tool
+
+* Ubuntu 18.04 LTS
+
 ### Usage
+
+#### Benchmark Tools
 
 ```powershell
 PS> .\bin\<build type>\EventLogBencher.exe -w [wait milliseconds] -t [total emitting events] [-l [emitting lorem ipsum text length (1 to 65535)]]
