@@ -42,6 +42,13 @@ PS> .\bin\<build type>\EventLogBencher.exe -w [wait milliseconds] -t [total emit
 PS> .\bin\<build type>\FileLoggingBencher.exe -r [flow rate] -t [total emitting steps] [-l [emitting lorem ipsum text length (1 to 65535)]]
 ```
 
+#### Monitor Tools
+
+```bash
+$ pip3 install -r BenchmarkPerformanceMonitorUnix/requirements.txt
+$ python3 ./BenchmarkPerformanceMonitorUnix/monitor.py [steps]
+```
+
 ### LICENSE
 
 [MIT](LICENSE).
