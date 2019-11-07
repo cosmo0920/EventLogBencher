@@ -59,9 +59,10 @@ namespace FileLoggingBencher
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            Console.WriteLine("steps\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage");
+            Console.WriteLine("steps\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage\tDisk Time");
             TotalCPUCounter counter = new TotalCPUCounter();
-            MonitorProcesses monitor = new MonitorProcesses(counter);
+            DiskUsageCounter diskCounter = new DiskUsageCounter();
+            MonitorProcesses monitor = new MonitorProcesses(counter, diskCounter);
 
             long batchNum = rate / BINNUM;
             long residualNUM = rate % BINNUM;

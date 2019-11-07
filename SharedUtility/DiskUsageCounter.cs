@@ -1,30 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SharedUtility
 {
-    class TotalCPUCounter
+    class DiskUsageCounter
     {
         private PerformanceCounter counter;
-        public PerformanceCounter Counter {
+        public PerformanceCounter Counter
+        {
             get { return counter; }
             private set { counter = value; }
         }
 
-        public TotalCPUCounter()
+        public DiskUsageCounter()
         {
-            var counter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            var counter = new PerformanceCounter("PhysicalDisk", "% Disk Time", "_Total");
             counter.NextValue();
             Counter = counter;
         }
 
-        public void GetCPUUsage()
+        public void GetDiskUsage()
         {
-            Console.Write("\t{0, 8}", Counter.NextValue());
+            Console.WriteLine("\t{0, 8}", Counter.NextValue());
         }
     }
 }

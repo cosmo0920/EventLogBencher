@@ -46,9 +46,10 @@ namespace BenchmarkPerformanceMonitor
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            Console.WriteLine("steps\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage");
-            TotalCPUCounter counter = new TotalCPUCounter();
-            MonitorProcesses monitor = new MonitorProcesses(counter);
+            Console.WriteLine("steps\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage\tDisk Time");
+            TotalCPUCounter cpuCounter = new TotalCPUCounter();
+            DiskUsageCounter diskCounter = new DiskUsageCounter();
+            MonitorProcesses monitor = new MonitorProcesses(cpuCounter, diskCounter);
 
             for (int i = 0; i < loggingSteps; i++)
             {

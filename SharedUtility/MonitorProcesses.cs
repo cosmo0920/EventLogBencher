@@ -10,10 +10,12 @@ namespace SharedUtility
     class MonitorProcesses
     {
         public TotalCPUCounter cpuCounter;
+        public DiskUsageCounter diskCounter;
 
-        public MonitorProcesses(TotalCPUCounter cpuCounter)
+        public MonitorProcesses(TotalCPUCounter cpuCounter, DiskUsageCounter diskCounter)
         {
             this.cpuCounter = cpuCounter;
+            this.diskCounter = diskCounter;
         }
 
         public void Run()
@@ -34,6 +36,7 @@ namespace SharedUtility
                     Console.Write("\t{0, 8}", pagefile_memory / (float)(1024.0 * 1024.0));
             }
             cpuCounter.GetCPUUsage();
+            diskCounter.GetDiskUsage();
         }
     }
 }

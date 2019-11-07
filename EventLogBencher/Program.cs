@@ -31,9 +31,10 @@ namespace EventLogBencher
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            Console.WriteLine("events\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage");
+            Console.WriteLine("events\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage\t%Disk Time");
             TotalCPUCounter counter = new TotalCPUCounter();
-            MonitorProcesses monitor = new MonitorProcesses(counter);
+            DiskUsageCounter diskCounter = new DiskUsageCounter();
+            MonitorProcesses monitor = new MonitorProcesses(counter, diskCounter);
             for (int i = 0; i < totalEvents / 10; i++)
             {
                 if (i % 10 == 0)
@@ -76,7 +77,8 @@ namespace EventLogBencher
             var text = LoremIpsum.ASCIIText();
             Encoding e = System.Text.Encoding.GetEncoding("UTF-8");
             string result = new String(text.TakeWhile((c, i) => e.GetByteCount(text.Substring(0, i + 1)) <= loremIpsumLength).ToArray());
-            MonitorProcesses monitor = new MonitorProcesses(counter);
+            DiskUsageCounter diskCounter = new DiskUsageCounter();
+            MonitorProcesses monitor = new MonitorProcesses(counter, diskCounter);
             for (int i = 0; i < totalEvents / 10; i++)
             {
                 if (i % 10 == 0)
