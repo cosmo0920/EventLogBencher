@@ -72,7 +72,7 @@ namespace EventLogBencher
             //  loremIpsumLength should be less equal than 65535.
             loremIpsumLength = loremIpsumLength > 65535 ? 65535 : loremIpsumLength;
 
-            Console.WriteLine("events\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage");
+            Console.WriteLine("events\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage\tDisk Time");
             TotalCPUCounter counter = new TotalCPUCounter();
             var text = LoremIpsum.ASCIIText();
             Encoding e = System.Text.Encoding.GetEncoding("UTF-8");
