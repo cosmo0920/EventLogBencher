@@ -32,9 +32,9 @@ namespace EventLogBencher
             sw.Start();
 
             Console.WriteLine("events\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage\t%Disk Time");
-            TotalCPUCounter counter = new TotalCPUCounter();
+            TotalCPUCounter cpuCounter = new TotalCPUCounter();
             DiskUsageCounter diskCounter = new DiskUsageCounter();
-            MonitorProcesses monitor = new MonitorProcesses(counter, diskCounter);
+            MonitorProcesses monitor = new MonitorProcesses(cpuCounter, diskCounter);
             for (int i = 0; i < totalEvents / 10; i++)
             {
                 if (i % 10 == 0)
@@ -73,12 +73,12 @@ namespace EventLogBencher
             loremIpsumLength = loremIpsumLength > 65535 ? 65535 : loremIpsumLength;
 
             Console.WriteLine("events\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage\tDisk Time");
-            TotalCPUCounter counter = new TotalCPUCounter();
+            TotalCPUCounter cpuCounter = new TotalCPUCounter();
             var text = LoremIpsum.ASCIIText();
             Encoding e = System.Text.Encoding.GetEncoding("UTF-8");
             string result = new String(text.TakeWhile((c, i) => e.GetByteCount(text.Substring(0, i + 1)) <= loremIpsumLength).ToArray());
             DiskUsageCounter diskCounter = new DiskUsageCounter();
-            MonitorProcesses monitor = new MonitorProcesses(counter, diskCounter);
+            MonitorProcesses monitor = new MonitorProcesses(cpuCounter, diskCounter);
             for (int i = 0; i < totalEvents / 10; i++)
             {
                 if (i % 10 == 0)
