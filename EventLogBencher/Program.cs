@@ -107,7 +107,7 @@ namespace EventLogBencher
                     for (int k = 0; k < batchNum; k++)
                         // Write an informational entry to the event log.
                         benchLog.WriteEntry(result);
-                    Thread.Sleep(10);
+                    //Thread.Sleep(10);
                 }
                 for (int j = 0; j < residualNUM; j++)
                     benchLog.WriteEntry(result);
