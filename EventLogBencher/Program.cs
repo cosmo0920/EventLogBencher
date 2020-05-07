@@ -62,7 +62,7 @@ namespace EventLogBencher
             sw.Stop();
             Console.Write(String.Format("{0, 8}", totalEvents));
             monitor.Run();
-            Console.WriteLine(String.Format("Flow rate: {0} events per seconds.", totalEvents / (float)(sw.ElapsedMilliseconds / 1000.0)));
+            Console.WriteLine(String.Format("Flow rate: {0} events per second.", totalEvents / (float)(sw.ElapsedMilliseconds / 1000.0)));
 
             Console.WriteLine("Message written to event log.");
         }
@@ -121,7 +121,7 @@ namespace EventLogBencher
             sw.Stop();
             Console.Write(String.Format("{0, 8}", totalSteps * batchSize));
             monitor.Run();
-            Console.WriteLine(String.Format("Flow rate: {0} events per seconds.", (totalSteps  * batchSize) / (float)(sw.ElapsedMilliseconds / 1000.0)));
+            Console.WriteLine(String.Format("Flow rate: {0} events per second.", (totalSteps  * batchSize) / (float)(sw.ElapsedMilliseconds / 1000.0)));
 
             Console.WriteLine("Message written to event log.");
         }
@@ -165,7 +165,7 @@ namespace EventLogBencher
             sw.Stop();
             Console.Write(String.Format("{0, 8}", totalEvents));
             monitor.Run();
-            Console.WriteLine(String.Format("Flow rate: {0} events per seconds.", totalEvents / (float)(sw.ElapsedMilliseconds / 1000.0)));
+            Console.WriteLine(String.Format("Flow rate: {0} events per second.", totalEvents / (float)(sw.ElapsedMilliseconds / 1000.0)));
 
             Console.WriteLine("Message written to event log.");
         }
