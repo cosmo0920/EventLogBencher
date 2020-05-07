@@ -34,8 +34,16 @@ A tiny EventLog benchmark tool.
 
 #### Benchmark Tools
 
+##### Wait based EventLog writing
+
 ```powershell
-PS> .\bin\<build type>\EventLogBencher.exe -w [wait milliseconds] -t [total emitting events] [-l [emitting lorem ipsum text length (1 to 65535)]]
+PS> .\bin\<build type>\EventLogBencher.exe wait -w [wait milliseconds] -t [total emitting events] [-l [emitting lorem ipsum text length (1 to 65535)]]
+```
+
+##### Batch size based EventLog writing
+
+```powershell
+PS> .\bin\<build type>\EventLogBencher.exe batch -b [batch size] -t [total emitting steps] -l [emitting lorem ipsum text length (1 to 65535)]
 ```
 
 ```powershell

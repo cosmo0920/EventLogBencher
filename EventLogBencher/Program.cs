@@ -6,11 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CommandLine;
 
 namespace EventLogBencher
 {
     class Program
     {
+        private static DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+        private static long BINNUM = 10;
         static void CheckChannelExistence() {
             // Create the source, if it does not already exist.
             if (!EventLog.SourceExists("FluentBench"))
@@ -64,6 +67,65 @@ namespace EventLogBencher
             Console.WriteLine("Message written to event log.");
         }
 
+        public static long GetUnixTime(DateTime targetTime)
+        {
+            targetTime = targetTime.ToUniversalTime();
+            TimeSpan elapsedTime = targetTime - UNIX_EPOCH;
+
+            return (long)elapsedTime.TotalSeconds;
+        }
+
+        static void DoBenchmarkBatchedLoremIpsum(EventLog benchLog, long batchSize, long totalSteps, long loremIpsumLength)
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            //  loremIpsumLength should be less equal than 65535.
+            loremIpsumLength = loremIpsumLength > 65535 ? 65535 : loremIpsumLength;
+
+            Console.WriteLine("events\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage\tDisk Time");
+            TotalCPUCounter cpuCounter = new TotalCPUCounter();
+            var text = LoremIpsum.ASCIIText();
+            Encoding e = System.Text.Encoding.GetEncoding("UTF-8");
+            string result = new String(text.TakeWhile((c, i) => e.GetByteCount(text.Substring(0, i + 1)) <= loremIpsumLength).ToArray());
+            DiskUsageCounter diskCounter = new DiskUsageCounter();
+            MonitorProcesses monitor = new MonitorProcesses(cpuCounter, diskCounter);
+
+            long batchNum = batchSize / BINNUM;
+            long residualNUM = batchSize % BINNUM;
+
+            for (int i = 0; i < totalSteps; i++)
+            {
+                DateTime targetTime = DateTime.Now;
+                long currentTime = GetUnixTime(targetTime);
+
+                Console.Write(String.Format("{0, 8}", i));
+                Task.Run(() => monitor.Run());
+
+                for (int j = 0; j < BINNUM; j++)
+                {
+                    for (int k = 0; k < batchNum; k++)
+                        // Write an informational entry to the event log.
+                        benchLog.WriteEntry(result);
+                    Thread.Sleep(10);
+                }
+                for (int j = 0; j < residualNUM; j++)
+                    benchLog.WriteEntry(result);
+
+                while (GetUnixTime(DateTime.Now) <= currentTime)
+                {
+                    Thread.Sleep(1);
+                }
+            }
+
+            sw.Stop();
+            Console.Write(String.Format("{0, 8}", totalSteps * batchSize));
+            monitor.Run();
+            Console.WriteLine(String.Format("Flow rate: {0} events per seconds.", (totalSteps  * batchSize) / (float)(sw.ElapsedMilliseconds / 1000.0)));
+
+            Console.WriteLine("Message written to event log.");
+        }
+
         static void DoBenchmarkLoremIpsum(EventLog benchLog, int waitMSec, long totalEvents, long loremIpsumLength)
         {
             Stopwatch sw = new Stopwatch();
@@ -110,30 +172,56 @@ namespace EventLogBencher
 
         public static void Main(string[] args)
         {
-            int waitMSec = 1 * 1000;
-            long totalEvents = 10000;
-            long loremIpsumLength = -1;
+            Parser.Default.ParseArguments<WaitBenchOptions, BatchBenchOptions>(args)
+                .MapResult(
+                    (WaitBenchOptions opts) => RunWaitBench(opts),
+                    (BatchBenchOptions opts) => RunBatchBench(opts),
+                    errs => 1);
+        }
 
-            CommandLine.ParserResult<Options> result = CommandLine.Parser.Default.ParseArguments<Options>(args);
+        public static int RunWaitBench(WaitBenchOptions opts) {
+            int waitMsec = Convert.ToInt32(opts.WaitMSec);
+            long totalEvents = Convert.ToInt64(opts.TotalEvents);
+            long loremIpsumLength = opts.LoremIpsumLength;
 
-            if (result.Tag == CommandLine.ParserResultType.Parsed)
+            Console.WriteLine("waitMSec: {0}", waitMsec);
+            Console.WriteLine("totalEvents: {0}", totalEvents);
+            Console.WriteLine("loremIpsumLength: {0}", loremIpsumLength);
+            DoBenchMark(waitMsec, totalEvents, loremIpsumLength);
+
+            return 0;
+        }
+
+        public static int RunBatchBench(BatchBenchOptions opts)
+        {
+            long batchSize = opts.BatchSize;
+            long totalSteps = opts.TotalSteps;
+            long loremIpsumLength = opts.LoremIpsumLength;
+
+            Console.WriteLine("batchSize: {0}", batchSize);
+            Console.WriteLine("totalEvents: {0}", totalSteps);
+            Console.WriteLine("loremIpsumLength: {0}", loremIpsumLength);
+            DoBatchedBenchMark(batchSize, totalSteps, loremIpsumLength);
+
+            return 0;
+        }
+
+        static void DoBatchedBenchMark(long batchSize, long totalEvents, long loremIpsumLength)
+        {
+            CheckChannelExistence();
+
+            // Create an EventLog instance and assign its source.
+            EventLog benchLog = new EventLog { Source = "FluentBench" };
+
+            if (loremIpsumLength > 0)
             {
-                var parsed = (CommandLine.Parsed<Options>)result;
-
-                waitMSec = Convert.ToInt32(parsed.Value.WaitMSec);
-                totalEvents = Convert.ToInt64(parsed.Value.TotalEvents);
-                loremIpsumLength = parsed.Value.LoremIpsumLength;
-
-                Console.WriteLine("waitMSec: {0}", waitMSec);
-                Console.WriteLine("totalEvents: {0}", totalEvents);
-                Console.WriteLine("loremIpsumLength: {0}", loremIpsumLength);
-
-                DoBenchMark(waitMSec, totalEvents, loremIpsumLength);
+                DoBenchmarkBatchedLoremIpsum(benchLog, batchSize, totalEvents, loremIpsumLength);
             }
             else
             {
-                Console.WriteLine("\nPlease check correct arguments!");
+                Console.WriteLine("\nPlease check correct arguments!\nNot Implemented this condition branch.");
             }
+
         }
 
         static void DoBenchMark(int waitMSec, long totalEvents, long loremIpsumLength) {
