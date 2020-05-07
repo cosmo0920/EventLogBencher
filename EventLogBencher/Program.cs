@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CommandLine;
 
 namespace EventLogBencher
 {
@@ -74,7 +75,7 @@ namespace EventLogBencher
             return (long)elapsedTime.TotalSeconds;
         }
 
-        static void DoBenchmarkBatchedLoremIpsum(EventLog benchLog, long batchSize, long totalEvents, long loremIpsumLength)
+        static void DoBenchmarkBatchedLoremIpsum(EventLog benchLog, long batchSize, long totalSteps, long loremIpsumLength)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -93,7 +94,7 @@ namespace EventLogBencher
             long batchNum = batchSize / BINNUM;
             long residualNUM = batchSize % BINNUM;
 
-            for (int i = 0; i < totalEvents; i++)
+            for (int i = 0; i < totalSteps; i++)
             {
                 DateTime targetTime = DateTime.Now;
                 long currentTime = GetUnixTime(targetTime);
@@ -118,9 +119,9 @@ namespace EventLogBencher
             }
 
             sw.Stop();
-            Console.Write(String.Format("{0, 8}", totalEvents));
+            Console.Write(String.Format("{0, 8}", totalSteps * batchSize));
             monitor.Run();
-            Console.WriteLine(String.Format("Flow rate: {0} events per seconds.", totalEvents / (float)(sw.ElapsedMilliseconds / 1000.0)));
+            Console.WriteLine(String.Format("Flow rate: {0} events per seconds.", (totalSteps  * batchSize) / (float)(sw.ElapsedMilliseconds / 1000.0)));
 
             Console.WriteLine("Message written to event log.");
         }
@@ -171,38 +172,38 @@ namespace EventLogBencher
 
         public static void Main(string[] args)
         {
-            int waitMSec = 1 * 1000;
-            long totalEvents = 10000;
-            long loremIpsumLength = -1;
-            long batchSize = -1;
+            Parser.Default.ParseArguments<WaitBenchOptions, BatchBenchOptions>(args)
+                .MapResult(
+                    (WaitBenchOptions opts) => RunWaitBench(opts),
+                    (BatchBenchOptions opts) => RunBatchBench(opts),
+                    errs => 1);
+        }
 
-            CommandLine.ParserResult<Options> result = CommandLine.Parser.Default.ParseArguments<Options>(args);
+        public static int RunWaitBench(WaitBenchOptions opts) {
+            int waitMsec = Convert.ToInt32(opts.WaitMSec);
+            long totalEvents = Convert.ToInt64(opts.TotalEvents);
+            long loremIpsumLength = opts.LoremIpsumLength;
 
-            if (result.Tag == CommandLine.ParserResultType.Parsed)
-            {
-                var parsed = (CommandLine.Parsed<Options>)result;
+            Console.WriteLine("waitMSec: {0}", waitMsec);
+            Console.WriteLine("totalEvents: {0}", totalEvents);
+            Console.WriteLine("loremIpsumLength: {0}", loremIpsumLength);
+            DoBenchMark(waitMsec, totalEvents, loremIpsumLength);
 
-                waitMSec = Convert.ToInt32(parsed.Value.WaitMSec);
-                totalEvents = Convert.ToInt64(parsed.Value.TotalEvents);
-                loremIpsumLength = parsed.Value.LoremIpsumLength;
-                batchSize = parsed.Value.BatchSize;
- 
-                if (batchSize > 0) {
-                    Console.WriteLine("batchSize: {0}", batchSize);
-                    Console.WriteLine("totalEvents: {0}", totalEvents);
-                    Console.WriteLine("loremIpsumLength: {0}", loremIpsumLength);
-                    DoBatchedBenchMark(batchSize, totalEvents, loremIpsumLength);
-                } else {
-                    Console.WriteLine("waitMSec: {0}", waitMSec);
-                    Console.WriteLine("totalEvents: {0}", totalEvents);
-                    Console.WriteLine("loremIpsumLength: {0}", loremIpsumLength);
-                    DoBenchMark(waitMSec, totalEvents, loremIpsumLength); 
-                }
-            }
-            else
-            {
-                Console.WriteLine("\nPlease check correct arguments!");
-            }
+            return 0;
+        }
+
+        public static int RunBatchBench(BatchBenchOptions opts)
+        {
+            long batchSize = opts.BatchSize;
+            long totalSteps = opts.TotalSteps;
+            long loremIpsumLength = opts.LoremIpsumLength;
+
+            Console.WriteLine("batchSize: {0}", batchSize);
+            Console.WriteLine("totalEvents: {0}", totalSteps);
+            Console.WriteLine("loremIpsumLength: {0}", loremIpsumLength);
+            DoBatchedBenchMark(batchSize, totalSteps, loremIpsumLength);
+
+            return 0;
         }
 
         static void DoBatchedBenchMark(long batchSize, long totalEvents, long loremIpsumLength)
