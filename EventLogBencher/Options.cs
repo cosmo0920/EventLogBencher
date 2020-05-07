@@ -10,7 +10,7 @@ namespace EventLogBencher
     [Verb("wait", HelpText = "Do wait based Windows EventLog writing")]
     class WaitBenchOptions
     {
-        [CommandLine.Option('w', "wait-msec", Required = false, HelpText = "ループで待つミリ秒")]
+        [CommandLine.Option('w', "wait-msec", Required = true, HelpText = "ループで待つミリ秒")]
         public string WaitMSec
         {
             get;
@@ -49,7 +49,7 @@ namespace EventLogBencher
             set;
         }
 
-        [CommandLine.Option('l', "lorem-ipsum-length", Required = true, Default=-1, HelpText = "Lorem Ipsum 文字列長")]
+        [CommandLine.Option('l', "lorem-ipsum-length", Required = false, Default=-1, HelpText = "Lorem Ipsum 文字列長")]
         public long LoremIpsumLength
         {
             get;

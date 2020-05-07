@@ -219,7 +219,7 @@ namespace EventLogBencher
             }
             else
             {
-                Console.WriteLine("\nPlease check correct arguments!Not Implemented this condition branch.");
+                Console.WriteLine("\nPlease check correct arguments!\nNot Implemented this condition branch.");
             }
 
         }
