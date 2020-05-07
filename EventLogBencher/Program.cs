@@ -99,7 +99,7 @@ namespace EventLogBencher
                 DateTime targetTime = DateTime.Now;
                 long currentTime = GetUnixTime(targetTime);
 
-                Console.Write(String.Format("{0, 8}", i));
+                Console.Write(String.Format("{0, 8}", i * batchSize));
                 Task.Run(() => monitor.Run());
 
                 for (int j = 0; j < BINNUM; j++)
