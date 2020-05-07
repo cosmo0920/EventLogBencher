@@ -11,6 +11,8 @@ namespace EventLogBencher
 {
     class Program
     {
+        private static DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+        private static long BINNUM = 10;
         static void CheckChannelExistence() {
             // Create the source, if it does not already exist.
             if (!EventLog.SourceExists("FluentBench"))
@@ -56,6 +58,65 @@ namespace EventLogBencher
                 benchLog.WriteEntry("Logging is fun! 😀😁😍🤩😋");
                 Thread.Sleep(waitMSec);
             }
+            sw.Stop();
+            Console.Write(String.Format("{0, 8}", totalEvents));
+            monitor.Run();
+            Console.WriteLine(String.Format("Flow rate: {0} events per seconds.", totalEvents / (float)(sw.ElapsedMilliseconds / 1000.0)));
+
+            Console.WriteLine("Message written to event log.");
+        }
+
+        public static long GetUnixTime(DateTime targetTime)
+        {
+            targetTime = targetTime.ToUniversalTime();
+            TimeSpan elapsedTime = targetTime - UNIX_EPOCH;
+
+            return (long)elapsedTime.TotalSeconds;
+        }
+
+        static void DoBenchmarkBatchedLoremIpsum(EventLog benchLog, long batchSize, long totalEvents, long loremIpsumLength)
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            //  loremIpsumLength should be less equal than 65535.
+            loremIpsumLength = loremIpsumLength > 65535 ? 65535 : loremIpsumLength;
+
+            Console.WriteLine("events\tWorking Set(MB)\tPrivate Memory(MB)\tPage File(MB)\tTotal CPU Usage\tDisk Time");
+            TotalCPUCounter cpuCounter = new TotalCPUCounter();
+            var text = LoremIpsum.ASCIIText();
+            Encoding e = System.Text.Encoding.GetEncoding("UTF-8");
+            string result = new String(text.TakeWhile((c, i) => e.GetByteCount(text.Substring(0, i + 1)) <= loremIpsumLength).ToArray());
+            DiskUsageCounter diskCounter = new DiskUsageCounter();
+            MonitorProcesses monitor = new MonitorProcesses(cpuCounter, diskCounter);
+
+            long batchNum = batchSize / BINNUM;
+            long residualNUM = batchSize % BINNUM;
+
+            for (int i = 0; i < totalEvents; i++)
+            {
+                DateTime targetTime = DateTime.Now;
+                long currentTime = GetUnixTime(targetTime);
+
+                Console.Write(String.Format("{0, 8}", i));
+                Task.Run(() => monitor.Run());
+
+                for (int j = 0; j < BINNUM; j++)
+                {
+                    for (int k = 0; k < batchNum; k++)
+                        // Write an informational entry to the event log.
+                        benchLog.WriteEntry(result);
+                    Thread.Sleep(10);
+                }
+                for (int j = 0; j < residualNUM; j++)
+                    benchLog.WriteEntry(result);
+
+                while (GetUnixTime(DateTime.Now) <= currentTime)
+                {
+                    Thread.Sleep(1);
+                }
+            }
+
             sw.Stop();
             Console.Write(String.Format("{0, 8}", totalEvents));
             monitor.Run();
@@ -113,6 +174,7 @@ namespace EventLogBencher
             int waitMSec = 1 * 1000;
             long totalEvents = 10000;
             long loremIpsumLength = -1;
+            long batchSize = -1;
 
             CommandLine.ParserResult<Options> result = CommandLine.Parser.Default.ParseArguments<Options>(args);
 
@@ -123,17 +185,42 @@ namespace EventLogBencher
                 waitMSec = Convert.ToInt32(parsed.Value.WaitMSec);
                 totalEvents = Convert.ToInt64(parsed.Value.TotalEvents);
                 loremIpsumLength = parsed.Value.LoremIpsumLength;
-
-                Console.WriteLine("waitMSec: {0}", waitMSec);
-                Console.WriteLine("totalEvents: {0}", totalEvents);
-                Console.WriteLine("loremIpsumLength: {0}", loremIpsumLength);
-
-                DoBenchMark(waitMSec, totalEvents, loremIpsumLength);
+                batchSize = parsed.Value.BatchSize;
+ 
+                if (batchSize > 0) {
+                    Console.WriteLine("batchSize: {0}", batchSize);
+                    Console.WriteLine("totalEvents: {0}", totalEvents);
+                    Console.WriteLine("loremIpsumLength: {0}", loremIpsumLength);
+                    DoBatchedBenchMark(batchSize, totalEvents, loremIpsumLength);
+                } else {
+                    Console.WriteLine("waitMSec: {0}", waitMSec);
+                    Console.WriteLine("totalEvents: {0}", totalEvents);
+                    Console.WriteLine("loremIpsumLength: {0}", loremIpsumLength);
+                    DoBenchMark(waitMSec, totalEvents, loremIpsumLength); 
+                }
             }
             else
             {
                 Console.WriteLine("\nPlease check correct arguments!");
             }
+        }
+
+        static void DoBatchedBenchMark(long batchSize, long totalEvents, long loremIpsumLength)
+        {
+            CheckChannelExistence();
+
+            // Create an EventLog instance and assign its source.
+            EventLog benchLog = new EventLog { Source = "FluentBench" };
+
+            if (loremIpsumLength > 0)
+            {
+                DoBenchmarkBatchedLoremIpsum(benchLog, batchSize, totalEvents, loremIpsumLength);
+            }
+            else
+            {
+                Console.WriteLine("\nPlease check correct arguments!Not Implemented this condition branch.");
+            }
+
         }
 
         static void DoBenchMark(int waitMSec, long totalEvents, long loremIpsumLength) {

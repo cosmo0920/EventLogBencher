@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventLogBencher", "EventLogBencher\EventLogBencher.csproj", "{3BA92B26-CFCB-4B11-992F-257342A84A4D}"
 EndProject
@@ -9,13 +9,14 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedUtility", "SharedUtil
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileLoggingBencher", "FileLoggingBencher\FileLoggingBencher.csproj", "{93F270D0-7E08-4E24-8E66-6ADEEF2FA661}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkPerformanceMonitor", "BenchmarkPerformanceMonitor\BenchmarkPerformanceMonitor.csproj", "{E0D6B99F-4D75-4585-B112-D80C51B463A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchmarkPerformanceMonitor", "BenchmarkPerformanceMonitor\BenchmarkPerformanceMonitor.csproj", "{E0D6B99F-4D75-4585-B112-D80C51B463A9}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SharedUtility\SharedUtility.projitems*{37462979-2a6d-4c54-bd99-bcb325e7eb5f}*SharedItemsImports = 13
 		SharedUtility\SharedUtility.projitems*{3ba92b26-cfcb-4b11-992f-257342a84a4d}*SharedItemsImports = 4
 		SharedUtility\SharedUtility.projitems*{93f270d0-7e08-4e24-8e66-6adeef2fa661}*SharedItemsImports = 4
+		SharedUtility\SharedUtility.projitems*{e0d6b99f-4d75-4585-b112-d80c51b463a9}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

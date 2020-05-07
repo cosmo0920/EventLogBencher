@@ -8,8 +8,15 @@ namespace EventLogBencher
 {
     class Options
     {
-        [CommandLine.Option('w', "wait-msec", Required = true, HelpText = "ループで待つミリ秒")]
+        [CommandLine.Option('w', "wait-msec", Required = false, HelpText = "ループで待つミリ秒")]
         public string WaitMSec
+        {
+            get;
+            set;
+        }
+
+        [CommandLine.Option('b', "batch-size", Required = false, HelpText = "1ループ当たりの書き込みサイズ")]
+        public long BatchSize
         {
             get;
             set;
