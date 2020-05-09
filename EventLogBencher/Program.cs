@@ -199,7 +199,8 @@ namespace EventLogBencher
             long loremIpsumLength = opts.LoremIpsumLength;
 
             Console.WriteLine("batchSize: {0}", batchSize);
-            Console.WriteLine("totalEvents: {0}", totalSteps);
+            Console.WriteLine("totalSteps: {0}", totalSteps);
+            Console.WriteLine("totalEvents: {0}", batchSize * totalSteps);
             Console.WriteLine("loremIpsumLength: {0}", loremIpsumLength);
             DoBatchedBenchMark(batchSize, totalSteps, loremIpsumLength);
 
