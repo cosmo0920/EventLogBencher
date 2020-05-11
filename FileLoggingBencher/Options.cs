@@ -29,8 +29,8 @@ namespace FileLoggingBencher
             set;
         }
 
-        [CommandLine.Option('l', "lorem-ipsum-length", Required = false, Default=-1, HelpText = "Lorem Ipsum 文字列長")]
-        public long LoremIpsumLength
+        [CommandLine.Option('l', "parameter-length", Required = false, Default=-1, HelpText = "Parameter 文字列長")]
+        public int ParameterLength
         {
             get;
             set;

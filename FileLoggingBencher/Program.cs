@@ -19,7 +19,7 @@ namespace FileLoggingBencher
         {
             int rate = 300;
             long loggingSteps = 50;
-            long loremIpsumLength = -1;
+            int parameterLength = -1;
             string outputFile = "";
 
             CommandLine.ParserResult<Options> result = CommandLine.Parser.Default.ParseArguments<Options>(args);
@@ -30,15 +30,15 @@ namespace FileLoggingBencher
 
                 rate = Convert.ToInt32(parsed.Value.Rate);
                 loggingSteps = Convert.ToInt64(parsed.Value.TotalSeconds);
-                loremIpsumLength = parsed.Value.LoremIpsumLength;
+                parameterLength = parsed.Value.ParameterLength;
                 outputFile = parsed.Value.OutputFile;
 
                 Console.WriteLine("rate: {0}", rate);
                 Console.WriteLine("loggingSteps: {0}", loggingSteps);
-                Console.WriteLine("loremIpsumLength: {0}", loremIpsumLength);
+                Console.WriteLine("parameterLength: {0}", parameterLength);
                 Console.WriteLine("outputFile: {0}", outputFile);
 
-                DoBenchMark(rate, loggingSteps, loremIpsumLength, outputFile);
+                DoBenchMark(rate, loggingSteps, parameterLength, outputFile);
             }
             else
             {
@@ -54,7 +54,7 @@ namespace FileLoggingBencher
             return (long)elapsedTime.TotalSeconds;
         }
 
-        private static void DoBenchMark(int rate, long loggingSteps, long loremIpsumLength, string outputFile)
+        private static void DoBenchMark(int rate, long loggingSteps, int optionLength, string outputFile)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -66,7 +66,7 @@ namespace FileLoggingBencher
 
             long batchNum = rate / BINNUM;
             long residualNUM = rate % BINNUM;
-            Generator generator = new Generator();
+            Generator generator = new Generator(optionLength);
 
             for (int i = 0; i < loggingSteps ; i++)
             {

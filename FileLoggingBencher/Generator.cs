@@ -10,9 +10,12 @@ namespace FileLoggingBencher
     {
         Random random;
         long Id = 0;
+        int parameterLength = 8;
 
-        public Generator()
+        public Generator(int parameterLength)
         {
+            if (parameterLength > 0)
+                this.parameterLength = parameterLength;
             random = new Random(DateTime.Now.Millisecond);
         }
         public string ID()
@@ -63,7 +66,7 @@ namespace FileLoggingBencher
 
         public string Run() {
 
-            return String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}", ID(), Time(), Level(), Method(), Uri(), RequestTime(), Parameter(8));
+            return String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}", ID(), Time(), Level(), Method(), Uri(), RequestTime(), Parameter(this.parameterLength));
         }
     }
 }
